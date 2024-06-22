@@ -48,7 +48,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(grayScaleConvert(uploadedImage)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Grayscale Image");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
@@ -66,7 +66,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(pixelate(uploadedImage, 5)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Pixelated Image");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
@@ -84,7 +84,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(detectEdges(uploadedImage)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Edge Detection");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
@@ -102,7 +102,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(negativeImage(uploadedImage)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Negative Image");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
@@ -120,7 +120,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(flipHorizontally(uploadedImage)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Horizontally Flipped Image");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
@@ -138,7 +138,7 @@ public class ImageProcessor {
             if (uploadedImage != null) {
                 try {
                     JLabel imageLabel = new JLabel(new ImageIcon(flipVertically(uploadedImage)));
-                    JFrame newframe = new JFrame();
+                    JFrame newframe = new JFrame("Vertically Flipped Image");
                     newframe.setLocationRelativeTo(null);
                     newframe.add(imageLabel);
                     newframe.pack();
