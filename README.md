@@ -1,5 +1,5 @@
 About this project : 
-I have created an application using the Swing library in Java. It takes an image input from the user and applies various image filtering techniques like edge detection, grayscale conversion, etc.
+I have created an application using the Swing library in Java. It takes an image input from the user and applies various image filtering techniques like edge detection, grayscale conversion, image inversion, pixelation, etc.
 
 Screenshots from the application : 
 ![image](https://github.com/DakshJain10/Image-Filtering-in-Java/assets/94750388/c5034542-6c6d-4104-97de-7efb30bc69e5)
