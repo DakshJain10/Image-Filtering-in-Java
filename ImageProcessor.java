@@ -9,7 +9,7 @@ public class ImageProcessor {
     private static BufferedImage uploadedImage;
 
     public static void main(String[] args) {
-        JFrame frame = new JFrame();
+        JFrame frame = new JFrame("Image Filtering");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setBounds(200, 200, 500, 500);
         frame.setLocationRelativeTo(null);
@@ -96,9 +96,66 @@ public class ImageProcessor {
             }
         });
 
+        JButton NegatImage = new JButton("Negative Image");
+        setFontSize(NegatImage, 22);
+        NegatImage.addActionListener(e -> {
+            if (uploadedImage != null) {
+                try {
+                    JLabel imageLabel = new JLabel(new ImageIcon(negativeImage(uploadedImage)));
+                    JFrame newframe = new JFrame();
+                    newframe.setLocationRelativeTo(null);
+                    newframe.add(imageLabel);
+                    newframe.pack();
+                    newframe.setVisible(true);
+                } catch (Exception ex) {
+                    JLabel ErrorMessage = new JLabel("Error");
+                    frame.add(ErrorMessage, BorderLayout.CENTER);
+                }
+            }
+        });
+
+        JButton FlipHori = new JButton("Flip Horizontally");
+        setFontSize(FlipHori, 22);
+        FlipHori.addActionListener(e -> {
+            if (uploadedImage != null) {
+                try {
+                    JLabel imageLabel = new JLabel(new ImageIcon(flipHorizontally(uploadedImage)));
+                    JFrame newframe = new JFrame();
+                    newframe.setLocationRelativeTo(null);
+                    newframe.add(imageLabel);
+                    newframe.pack();
+                    newframe.setVisible(true);
+                } catch (Exception ex) {
+                    JLabel ErrorMessage = new JLabel("Error");
+                    frame.add(ErrorMessage, BorderLayout.CENTER);
+                }
+            }
+        });
+
+        JButton FlipVert = new JButton("Flip Vertically");
+        setFontSize(FlipVert, 22);
+        FlipVert.addActionListener(e -> {
+            if (uploadedImage != null) {
+                try {
+                    JLabel imageLabel = new JLabel(new ImageIcon(flipVertically(uploadedImage)));
+                    JFrame newframe = new JFrame();
+                    newframe.setLocationRelativeTo(null);
+                    newframe.add(imageLabel);
+                    newframe.pack();
+                    newframe.setVisible(true);
+                } catch (Exception ex) {
+                    JLabel ErrorMessage = new JLabel("Error");
+                    frame.add(ErrorMessage, BorderLayout.CENTER);
+                }
+            }
+        });
+
         Options.add(GrayScale);
         Options.add(Pixelate);
         Options.add(EdgeDetect);
+        Options.add(NegatImage);
+        Options.add(FlipHori);
+        Options.add(FlipVert);
         frame.add(upload, BorderLayout.SOUTH);
 
         frame.setVisible(true);
@@ -107,20 +164,21 @@ public class ImageProcessor {
     public static BufferedImage detectEdges(BufferedImage img) {
         int h = img.getHeight(), w = img.getWidth(), threshold = 30, p = 0;
         BufferedImage edgeImg = new BufferedImage(w, h, BufferedImage.TYPE_BYTE_GRAY);
-        int[][] vert = new int[w][h];
-        int[][] horiz = new int[w][h];
+        int[][] vertical = new int[w][h];
+        int[][] horizontal = new int[w][h];
         int[][] edgeWeight = new int[w][h];
         for (int y = 1; y < h - 1; y++) {
             for (int x = 1; x < w - 1; x++) {
-                vert[x][y] = (int) (img.getRGB(x + 1, y - 1)
+                vertical[x][y] = (int) (img.getRGB(x + 1, y - 1)
                         & 0xFF + 2 * (img.getRGB(x + 1, y) & 0xFF) + img.getRGB(x + 1, y + 1) & 0xFF
                                 - img.getRGB(x - 1, y - 1)
                         & 0xFF - 2 * (img.getRGB(x - 1, y) & 0xFF) - img.getRGB(x - 1, y + 1) & 0xFF);
-                horiz[x][y] = (int) (img.getRGB(x - 1, y + 1)
+                horizontal[x][y] = (int) (img.getRGB(x - 1, y + 1)
                         & 0xFF + 2 * (img.getRGB(x, y + 1) & 0xFF) + img.getRGB(x + 1, y + 1) & 0xFF
                                 - img.getRGB(x - 1, y - 1)
                         & 0xFF - 2 * (img.getRGB(x, y - 1) & 0xFF) - img.getRGB(x + 1, y - 1) & 0xFF);
-                edgeWeight[x][y] = (int) (Math.sqrt(vert[x][y] * vert[x][y] + horiz[x][y] * horiz[x][y]));
+                edgeWeight[x][y] = (int) (Math
+                        .sqrt(vertical[x][y] * vertical[x][y] + horizontal[x][y] * horizontal[x][y]));
                 if (edgeWeight[x][y] > threshold)
                     p = (255 << 24) | (255 << 16) | (255 << 8) | 255;
                 else
@@ -132,12 +190,11 @@ public class ImageProcessor {
     }
 
     public static BufferedImage grayScaleConvert(BufferedImage img) {
-        System.out.println("Converting to Grayscale.");
-        BufferedImage grayImage = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
-        Graphics g = grayImage.getGraphics();
+        BufferedImage newImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_BYTE_GRAY);
+        Graphics g = newImg.getGraphics();
         g.drawImage(img, 0, 0, null);
         g.dispose();
-        return grayImage;
+        return newImg;
     }
 
     public static BufferedImage pixelate(BufferedImage img, int n) {
@@ -161,6 +218,50 @@ public class ImageProcessor {
             }
         }
         return pixImg;
+    }
+
+    public static BufferedImage negativeImage(BufferedImage img) {
+        BufferedImage negImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_RGB);
+        for (int y = 0; y < img.getHeight(); y++) {
+            for (int x = 0; x < img.getWidth(); x++) {
+                int pixel = img.getRGB(x, y);
+                int red = 255 - (pixel >> 16) & 0xFF;
+                int green = 255 - (pixel >> 8) & 0xFF;
+                int blue = 255 - (pixel) & 0xFF;
+                negImg.setRGB(x, y, (red << 16) | (green << 8) | blue);
+            }
+        }
+        return negImg;
+    }
+
+    public static BufferedImage flipHorizontally(BufferedImage img) {
+        int width = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage flippedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = img.getRGB(x, y);
+                flippedImage.setRGB(width - 1 - x, y, pixel);
+            }
+        }
+
+        return flippedImage;
+    }
+
+    public static BufferedImage flipVertically(BufferedImage img) {
+        int width = img.getWidth();
+        int height = img.getHeight();
+        BufferedImage flippedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                int pixel = img.getRGB(x, y);
+                flippedImage.setRGB(x, height - 1 - y, pixel);
+            }
+        }
+
+        return flippedImage;
     }
 
     private static void setFontSize(JComponent component, int size) {
